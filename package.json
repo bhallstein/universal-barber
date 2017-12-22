@@ -1,0 +1,17 @@
+{
+  "name": "universal-barber",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Ocelot Games",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "html-webpack-plugin": "^2.30.1",
+    "webpack": "^3.10.0"
+  },
+  "dependencies": {
+    "big-js": "^3.1.3"
+  }
+}

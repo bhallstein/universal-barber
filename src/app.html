@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>Universal Barber</title>
+</head>
+
+<body>
+
+  <div class="barber-wrap">
+    <div class="top-section">
+      <h1 class="top-section__title"></h1>
+      <p class="top-section__state"></p>
+    </div>
+
+    <div class="renderers"></div>
+  </div>
+
+  <style type="text/css" media="screen">
+    html,
+    body,
+    .barber-wrap {
+      height: 100%;
+      min-height: 500px;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+
+    .barber-wrap {                  /*   Outer vertical layout:                   */
+      display: flex;                /*            +-----------+                   */
+      flex-direction: column;       /*            | height: 1 |  // .top-section  */
+    }                               /*            +-----------+                   */
+    .top-section {                  /*            | height: 7 |  // .renderers    */
+      flex-basis: 1;                /*            |           |                   */
+    }                               /*            |           |                   */
+    .renderers {                    /*            +-----------+                   */
+      flex-basis: 7;
+    }
+
+
+    .renderers {
+      display: flex;                        /*   Renderers column-style layout:    */
+      align-items: flex-start;              /*         +----------------------+    */
+      justify-content: flex-start;          /*         |+-----+ +-----+       |    */
+      flex-flow: column wrap;               /*         ||     | |     |       |    */
+      align-content: flex-start;            /*         |+-----+ +-----+       |    */
+    }                                       /*         |+-----+ +-----+       |    */
+    .render-slot {                          /*         ||     | |     |       |    */
+      border-top: 1px solid black;          /*         |+-----+ +-----+       |    */
+      width: 300px;                         /*         |+-----+               |    */
+      margin-right: 1rem;                   /*         ||     |               |    */
+      padding: 0.5rem 0;                    /*         |+-----+               |    */
+    }                                       /*         +----------------------+    */
+    .render-slot:last-child {
+      border-bottom: 1px solid black;
+    }
+  </style>
+
+</body>
+</html>
