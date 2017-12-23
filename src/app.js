@@ -18,6 +18,10 @@ renderman.update();
 // ------------------------------
 
 controllerman.add_controller(c1_salon_haircut_btn());
+renderman.set_story(`
+- Welcome to Happy Hair Salon.^200 It’s great to see you.^1000
+- Oh look,^100 customers!
+`);
 
 
 // Game loop

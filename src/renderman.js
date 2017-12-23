@@ -5,6 +5,7 @@
 // - allocates slots for other renderers
 //
 
+import Typed from 'typed.js';
 import * as model from './model';
 
 
@@ -21,14 +22,34 @@ const el = {
     title: document.getElementsByClassName('top-section__title')[0],
     state: document.getElementsByClassName('top-section__state')[0],
   },
+
+  story: document.getElementsByClassName('story-time__inner')[0],
 };
 
 
-// Top section
+// Text content
 // ------------------------------
 
 function set_title(title) {
   el.top.title.textContent = title;
+}
+
+function set_story(story) {
+  if (typeof story !== 'string') {
+    throw new Error("'story' invalid")
+  }
+
+  if (set_story.typed) {
+    set_story.typed.stop();
+    set_story.typed.destroy();
+    set_story.typed = undefined;
+  }
+
+  set_story.typed = new Typed(el.story, {
+    strings:      [ story ],
+    typeSpeed:    10,
+    showCursor:   false,
+  });
 }
 
 
@@ -68,6 +89,8 @@ function remove_renderer(div) {
 
 export {
   set_title,
+  set_story,
+
   get_renderer_slot,
   update,
 }

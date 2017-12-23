@@ -14,6 +14,7 @@
     </div>
 
     <div class="renderers"></div>
+    <pre class="story-time"><span class="story-time__inner"></span></pre>
   </div>
 
   <style type="text/css" media="screen">
@@ -29,32 +30,42 @@
 
     .barber-wrap {                  /*   Outer vertical layout:                   */
       display: flex;                /*            +-----------+                   */
-      flex-direction: column;       /*            | height: 1 |  // .top-section  */
+      flex-direction: column;       /*            |height: 1  |  // .top-section  */
     }                               /*            +-----------+                   */
-    .top-section {                  /*            | height: 7 |  // .renderers    */
-      flex-basis: 1;                /*            |           |                   */
-    }                               /*            |           |                   */
-    .renderers {                    /*            +-----------+                   */
-      flex-basis: 7;
+    .top-section {                  /*            |height: 10 |  // .renderers    */
+                                    /*            |           |                   */
+    }                               /*            +-----------+                   */
+    .renderers {                    /*            |height: 2  |  // .story-time   */
+      flex-grow: 8;                 /*            +-----------+                   */
+    }
+    .story-time {
+      flex-grow: 1;
     }
 
 
     .renderers {
-      display: flex;                        /*   Renderers column-style layout:    */
+      display: flex;                        /*   Column layout for renderers:      */
       align-items: flex-start;              /*         +----------------------+    */
       justify-content: flex-start;          /*         |+-----+ +-----+       |    */
-      flex-flow: column wrap;               /*         ||     | |     |       |    */
+      flex-flow: column wrap;               /*         ||1    | |4    |       |    */
       align-content: flex-start;            /*         |+-----+ +-----+       |    */
     }                                       /*         |+-----+ +-----+       |    */
-    .render-slot {                          /*         ||     | |     |       |    */
-      border-top: 1px solid black;          /*         |+-----+ +-----+       |    */
+    .render-slot {                          /*         ||2    | |5    |       |    */
+      border-top: 1px solid #888;           /*         |+-----+ +-----+       |    */
       width: 300px;                         /*         |+-----+               |    */
-      margin-right: 1rem;                   /*         ||     |               |    */
+      margin-right: 1rem;                   /*         ||3    |               |    */
       padding: 0.5rem 0;                    /*         |+-----+               |    */
     }                                       /*         +----------------------+    */
     .render-slot:last-child {
-      border-bottom: 1px solid black;
+      border-bottom: 1px solid #888;
     }
+
+
+    .story-time {
+      border-top: 1px solid #888;
+      padding-top: 0.5rem;
+    }
+
   </style>
 
 </body>
