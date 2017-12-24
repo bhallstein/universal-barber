@@ -23,9 +23,18 @@ controllerman.add_controller(c1_salon_haircut_btn());
 // Game loop
 // ------------------------------
 
-function loop() {
+function loop(t) {
+  let delta_t = 0.04;
+  if (loop.last_t === undefined) {
+    loop.last_t = t;
+  }
+  else {
+    delta_t = (t - loop.last_t) * 0.001;
+    loop.last_t = t;
+  }
+
   // Update controllers
-  controllerman.get_controllers().forEach((c) => c.update());
+  controllerman.get_controllers().forEach((c) => c.update(delta_t));
 
   // Render
   renderman.update();
