@@ -24,14 +24,13 @@ controllerman.add_controller(c1_salon_haircut_btn());
 // ------------------------------
 
 function loop(t) {
-  let delta_t = 0.04;
-  if (loop.last_t === undefined) {
-    loop.last_t = t;
-  }
-  else {
+  let delta_t = 0.05;
+  if (loop.last_t !== undefined) {
     delta_t = (t - loop.last_t) * 0.001;
     loop.last_t = t;
   }
+  loop.last_t = t;
+  delta_t = Math.max(delta_t, 0.05);
 
   // Update controllers
   controllerman.get_controllers().forEach((c) => c.update(delta_t));
