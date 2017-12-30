@@ -1,0 +1,54 @@
+//
+// app.scss - styles
+//
+
+$border-color: #888;
+
+
+html,
+body,
+.barber-wrap {
+  height: 100%;
+  min-height: 500px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+
+.barber-wrap {                  //   Outer vertical layout:
+  display: flex;                //            +-----------+
+  flex-direction: column;       //            |           |  // .top-section
+}                               //            +-----------+
+.top-section {                  //            |           |  // .renderers
+                                //            |           |
+}                               //            +-----------+
+.renderers {                    //            |           |  // .story-time
+  flex-grow: 8;                 //            +-----------+
+}
+.story-time {
+  flex-grow: 1;
+}
+
+
+.renderers {
+  display: flex;                        //   Renderers column-style layout:
+  align-items: flex-start;              //         +----------------------+
+  justify-content: flex-start;          //         |+-----+ +-----+       |
+  flex-flow: column wrap;               //         ||     | |     |       |
+  align-content: flex-start;            //         |+-----+ +-----+       |
+}                                       //         |+-----+ +-----+       |
+.render-slot {                          //         ||     | |     |       |
+  border-top: 1px solid $border-color;  //         |+-----+ +-----+       |
+  width: 300px;                         //         |+-----+               |
+  margin-right: 1rem;                   //         ||     |               |
+  padding: 0.5rem 0;                    //         |+-----+               |
+}                                       //         +----------------------+
+.render-slot:last-child {
+  border-bottom: 1px solid $border-color;
+}
+
+
+.story-time {
+  border-top: 1px solid #888;
+  padding-top: 0.5rem;
+}
