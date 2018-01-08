@@ -8,7 +8,7 @@
 //
 
 import Typed from 'typed.js';
-import * as model from '../model';
+import model from '../model';
 
 const el = {
   title: document.getElementsByClassName('top-section__title')[0],
@@ -54,10 +54,10 @@ function set_story(story) {
 //
 
 function update() {
-  let n = model.n_haircuts().toFixed();
+  let n = model.haircuts.toFixed();
 
   if (update.prev_n_haircuts !== n) {
-    el.state.textContent = `${model.n_haircuts().toFixed()} haircuts completed`;
+    el.state.textContent = `${n} haircuts completed`;
     update.prev_n_haircuts = n;
   }
 }

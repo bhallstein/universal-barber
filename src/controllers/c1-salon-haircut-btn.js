@@ -5,7 +5,7 @@
 //
 
 import * as renderman from '../renderman';
-import * as model from '../model';
+import model from '../model';
 import create_element from '../helpers/create_element';
 
 export default function instance() {
@@ -53,7 +53,7 @@ export default function instance() {
   }
 
   function cb__btn_click(ev) {
-    model.add_haircut();
+    model.haircuts = model.haircuts.plus(1);
     --customers_waiting;
     disp_update();
   }
