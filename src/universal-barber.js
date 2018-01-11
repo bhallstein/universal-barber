@@ -4,21 +4,20 @@
 
 import Big from 'big.js';
 
-import * as model from './model';
-import * as renderman from './renderman';
 import * as controllerman from './controllerman';
+import * as c_core from './controllers/core.js';
 import c1_salon_haircut_btn from './controllers/c1-salon-haircut-btn';
 
 
-renderman.set_title('Happy Hair Salon');
-renderman.update();
+c_core.set_title('Happy Hair Salon');
+c_core.update();
 
 
 // Add initial controller
 // ------------------------------
 
 controllerman.add_controller(c1_salon_haircut_btn());
-renderman.set_story(`
+c_core.set_story(`
 - Welcome to Happy Hair Salon.^200 It’s great to see you.^1000
 - Oh look,^100 customers!
 `);
@@ -38,9 +37,7 @@ function loop(t) {
 
   // Update controllers
   controllerman.get_controllers().forEach((c) => c.update(delta_t));
-
-  // Render
-  renderman.update();
+  c_core.update();
 
   // Loop
   loop.enqueue();
