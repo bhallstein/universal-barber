@@ -28,4 +28,5 @@ function remove_renderer(div) {
 
 export {
   get_renderer_slot,
+  remove_renderer,
 }
