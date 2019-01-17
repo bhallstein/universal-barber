@@ -17,9 +17,8 @@ c_core.update();
 // ------------------------------
 
 controllerman.add_controller(sanity__happy_hair_salon());
-c_core.set_story(`
-- Welcome to Happy Hair Salon.^200 It’s great to see you.^1000
-- Oh look,^100 customers!
+c_core.push_story(`
+- Welcome to Happy Hair Salon. It’s great to see you.
 `);
 
 
@@ -47,3 +46,4 @@ loop.stop = () => cancelAnimationFrame(loop.timer);
 loop.enqueue();
 
 window.universal_barber = loop;  // For convenience
+

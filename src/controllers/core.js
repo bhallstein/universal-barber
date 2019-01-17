@@ -11,10 +11,9 @@ import Typed from 'typed.js';
 import model from '../model';
 
 const el = {
-  title: document.getElementsByClassName('top-section__title')[0],
-  state: document.getElementsByClassName('top-section__state')[0],
-
-  story: document.getElementsByClassName('story-time__inner')[0],
+  title: document.querySelector('.top-section__title'),
+  state: document.querySelector('.top-section__state'),
+  story: document.querySelector('.story-time__inner'),
 };
 
 
@@ -29,22 +28,60 @@ function set_title(title) {
 // Story
 // ------------------------------
 
-function set_story(story) {
+const story_state = {
+  running: false,
+  typed: null,
+  queue: [ ],    // strings
+};
+
+function push_story(story) {
+  story = story.replace(/([\.\?\!]) /, '$1^320 ');
+  story = story.replace(/\, /, ',^160 ');
+
   if (typeof story !== 'string') {
     throw new Error("'story' invalid")
   }
 
-  if (set_story.typed) {
-    set_story.typed.stop();
-    set_story.typed.destroy();
-    set_story.typed = undefined;
+  story_state.queue.push(story);
+  story__begin();
+}
+
+function clear_story() {
+  story_state.running = false;
+
+  if (story_state.typed) {
+    story_state.typed.stop();
+    story_state.typed.destroy();
+    story_state.typed = null;
   }
 
-  set_story.typed = new Typed(el.story, {
-    strings:      [ story ],
-    typeSpeed:    10,
-    showCursor:   false,
+  el.story.innerHTML = '';
+}
+
+function story__begin() {
+  if (story_state.running || !story_state.queue.length) {
+    return;
+  }
+
+  const item = story_state.queue[0];
+  story_state.queue = story_state.queue.slice(1);
+
+  // Begin item
+  const div_entry = document.createElement('div');
+  el.story.appendChild(div_entry);
+
+  story_state.running = true;
+  story_state.typed = new Typed(div_entry, {
+    strings:    [ item ],
+    typeSpeed:  10,
+    showCursor: false,
+    onComplete: story__complete_item,
   });
+}
+
+function story__complete_item() {
+  story_state.running = false;
+  story__begin();
 }
 
 
@@ -66,7 +103,8 @@ update.prev_n_haircuts = null;
 
 export {
   set_title,
-  set_story,
-
+  push_story,
+  clear_story,
   update,
-}
+};
+

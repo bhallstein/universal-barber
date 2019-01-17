@@ -5,10 +5,14 @@
 let controllers = [ ];
 
 
-function add_controller(c) {
+function is_controller(c) {
   // c is considered to be a controller if it has an update() function
-  const is_controller = (c && typeof c.update === 'function');
-  if (!is_controller) {
+  return (c && typeof c.update === 'function');
+}
+
+
+function add_controller(c) {
+  if (!is_controller(c)) {
     throw Error('c is not a controller');
   }
 
@@ -28,4 +32,5 @@ export {
   add_controller,
   remove_controller,
   get_controllers,
-}
+};
+
