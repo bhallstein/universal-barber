@@ -6,7 +6,7 @@ import Big from 'big.js';
 
 import * as controllerman from './controllerman';
 import * as c_core from './controllers/core.js';
-import c1_salon_haircut_btn from './controllers/c1-salon-haircut-btn';
+import sanity__happy_hair_salon from './controllers/sanity__happy-hair-salon';
 
 
 c_core.set_title('Happy Hair Salon');
@@ -16,7 +16,7 @@ c_core.update();
 // Add initial controller
 // ------------------------------
 
-controllerman.add_controller(c1_salon_haircut_btn());
+controllerman.add_controller(sanity__happy_hair_salon());
 c_core.set_story(`
 - Welcome to Happy Hair Salon.^200 It’s great to see you.^1000
 - Oh look,^100 customers!

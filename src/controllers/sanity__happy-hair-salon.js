@@ -1,7 +1,7 @@
 //
-// controllers/c1-salon-haircut-btn.js
+// controllers/sanity__happy-hair-salon.js
 //
-// - simple initial controller, creates a haircut button
+// - simple initial controller
 //
 
 import * as renderman from '../renderman';
@@ -11,7 +11,7 @@ import create_element from '../helpers/create_element';
 export default function instance() {
   let e = {
     renderer_div : null,
-    btn           : null,
+    btn          : null,
     customer_count_wrap   : null,
     customer_count_n      : null,
     customer_count_label  : null,
@@ -84,3 +84,4 @@ export default function instance() {
     update,
   };
 }
+
