@@ -12,7 +12,7 @@ import * as core from './core';
 function mk_instance() {
   const story = [
     {
-      text:      'It’s a nice salon you have here. Could use a lick of paint, maybe.',
+      text:      'Nice shop you have here. It could use a lick of paint, maybe.',
       time:      4,
     },
     {
@@ -129,7 +129,7 @@ function mk_instance() {
 
     core.push_story('‘Would you care to purchase my old razor?’ enquires an old gent on his way out. He doesn’t meet your eye.');
     setTimeout(_ => {
-      core.push_story('The razor is a grimy old thing, but it would polish up all right.');
+      core.push_story('The razor is grimy and old, but would polish up all right.');
     }, 5000);
 
     setTimeout(_ => { e.razor_purchase_wrapper.style.display = 'block'; }, 8000);

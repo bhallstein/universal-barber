@@ -28,9 +28,6 @@ body,
 .story-time {
   flex-grow: 1;
 }
-.story-time__inner > div {
-  margin-bottom: 0.25rem;
-}
 
 
 .renderers {
@@ -54,5 +51,9 @@ body,
 .story-time {
   border-top: 1px solid #888;
   padding-top: 0.5rem;
+  font-family: monospace;
+}
+.story-time__inner > div {
+  margin-bottom: 0.25rem;
 }
 

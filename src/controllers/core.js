@@ -7,7 +7,7 @@
 // - is not registered with controllerman, because it does not have a render slot
 //
 
-import Typed from 'typed.js';
+import typeout from '../helpers/typeout';
 import model from '../model';
 
 const el = {
@@ -30,7 +30,7 @@ function set_title(title) {
 
 const story_state = {
   running: false,
-  typed: null,
+  typeout: null,
   queue: [ ],    // strings
 };
 
@@ -52,10 +52,9 @@ function push_story(story) {
 function clear_story() {
   story_state.running = false;
 
-  if (story_state.typed) {
-    story_state.typed.stop();
-    story_state.typed.destroy();
-    story_state.typed = null;
+  if (story_state.typeout) {
+    story_state.typeout.stop();
+    story_state.typeout = null;
   }
 
   el.story.innerHTML = '';
@@ -74,12 +73,7 @@ function story__begin() {
   el.story.appendChild(div_entry);
 
   story_state.running = true;
-  story_state.typed = new Typed(div_entry, {
-    strings:    [ item ],
-    typeSpeed:  10,
-    showCursor: false,
-    onComplete: story__complete_item,
-  });
+  typeout(item, div_entry, 10, story__complete_item);
 }
 
 function story__complete_item() {
