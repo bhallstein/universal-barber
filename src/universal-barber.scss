@@ -16,17 +16,20 @@ body,
 
 
 .barber-wrap {                  //   Outer vertical layout:
-  display: flex;                //            +-----------+
-  flex-direction: column;       //            |           |  // .top-section
-}                               //            +-----------+
-.top-section {                  //            |           |  // .renderers
-                                //            |           |
-}                               //            +-----------+
-.renderers {                    //            |           |  // .story-time
-  flex-grow: 8;                 //            +-----------+
+  display: flex;                //         +-----------+
+  flex-direction: column;       //         |           |  // .top-section
+}                               //         +-----------+
+.top-section {                  //         |           |  // .renderers
+                                //         |           |
+}                               //         +-----------+
+.renderers {                    //         |           |  // .story-time
+  flex-grow: 8;                 //         +-----------+
 }
 .story-time {
   flex-grow: 1;
+}
+.story-time__inner > div {
+  margin-bottom: 0.25rem;
 }
 
 
@@ -52,3 +55,4 @@ body,
   border-top: 1px solid #888;
   padding-top: 0.5rem;
 }
+

@@ -17,9 +17,7 @@ c_core.update();
 // ------------------------------
 
 controllerman.add_controller(sanity__happy_hair_salon());
-c_core.push_story(`
-- Welcome to Happy Hair Salon. It’s great to see you.
-`);
+c_core.push_story('Welcome to Happy Hair Salon. It’s good to see you.');
 
 
 // Game loop
@@ -41,8 +39,8 @@ function loop(t) {
   // Loop
   loop.enqueue();
 }
-loop.enqueue = () => loop.timer = requestAnimationFrame(loop);
-loop.stop = () => cancelAnimationFrame(loop.timer);
+loop.enqueue = function() { loop.timer = requestAnimationFrame(loop) };
+loop.stop = function() { cancelAnimationFrame(loop.timer); };
 loop.enqueue();
 
 window.universal_barber = loop;  // For convenience

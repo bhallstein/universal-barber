@@ -35,8 +35,11 @@ const story_state = {
 };
 
 function push_story(story) {
-  story = story.replace(/([\.\?\!]) /, '$1^320 ');
-  story = story.replace(/\, /, ',^160 ');
+  if (story.length > 0 && !story.match(/^\s+$/)) {
+    story = `- ${story}`;
+  }
+  story = story.replace(/([\.\?\!])\s/g, '$1^320 ');
+  story = story.replace(/\,\s/g, ',^160 ');
 
   if (typeof story !== 'string') {
     throw new Error("'story' invalid")
@@ -91,14 +94,21 @@ function story__complete_item() {
 //
 
 function update() {
-  let n = model.haircuts.toFixed();
+  const s = {
+    haircuts: model.haircuts.toFixed(),
+    money:      model.money.toFixed(),
+  };
 
-  if (update.prev_n_haircuts !== n) {
-    el.state.textContent = `${n} haircuts completed`;
-    update.prev_n_haircuts = n;
+  if (JSON.stringify(s) !== JSON.stringify(update.s_prev)) {
+    el.state.innerHTML = `
+      ${s.haircuts} haircuts
+      ${s.haircuts !== '0' && s.money !== '0' ? '<br>' : ''}
+      ${s.money !== '0' ? `\$${s.money}`: ''}
+    `;
+    update.s_prev = s;
   }
 }
-update.prev_n_haircuts = null;
+update.s_prev = null;
 
 
 export {
