@@ -1,5 +1,5 @@
 //
-// create_element.js - create element from string
+// create-element.js - create HTML element from string
 //
 
 export default function create_element(str) {

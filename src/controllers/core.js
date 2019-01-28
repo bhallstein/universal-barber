@@ -90,14 +90,14 @@ function story__complete_item() {
 function update() {
   const s = {
     haircuts: model.haircuts.toFixed(),
-    money:      model.money.toFixed(),
+    money:    model.money.toFixed(),
   };
 
   if (JSON.stringify(s) !== JSON.stringify(update.s_prev)) {
     el.state.innerHTML = `
       ${s.haircuts} haircuts
-      ${s.haircuts !== '0' && s.money !== '0' ? '<br>' : ''}
-      ${s.money !== '0' ? `\$${s.money}`: ''}
+      <br>
+      £${s.money}
     `;
     update.s_prev = s;
   }

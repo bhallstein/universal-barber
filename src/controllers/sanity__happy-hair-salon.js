@@ -6,17 +6,18 @@
 
 import * as renderman from '../renderman';
 import model from '../model';
-import create_element from '../helpers/create_element';
 import * as core from './core';
+import create_element from '../helpers/create-element';
+import timed_story_helper from '../helpers/timed-story-helper';
 
 function mk_instance() {
-  const story = [
+  const story_items = [
     {
       text:      'Nice shop you have here. It could use a lick of paint, maybe.',
       time:      4,
     },
     {
-      text:      'Oh look, customers!',
+      text:      'Look, customers!',
       time:      8,
     },
     {
@@ -64,7 +65,7 @@ function mk_instance() {
               customer<span class="cust-count__plural">s</span> waiting</span>
             </span>
           </div>
-          <input type="button" class="haircut-btn" value="Give haircut" disabled>
+          <input type="button" class="haircut-btn" value="Cut hair" disabled>
 
           <div class="razor-purchase" style="display: none;">
             <input type="button" class="razor-purchase-btn" value="Purchase the old razor" title="\$${price_of_razor}">
@@ -89,25 +90,14 @@ function mk_instance() {
     e.haircut_btn.addEventListener('click', cb__haircut_btn__click);
     e.razor_purchase_btn.addEventListener('click', cb__razor_purchase_btn__click);
 
-    init_story();
+    story_items.helper = timed_story_helper(story_items);
     setTimeout(() => spawn = true, customer_initial_delay * 1000);
   }
   init();
 
-  function init_story() {
-    story.timeouts = story.map(item => setTimeout(_ => story_cb(item), item.time * 1000));
-  }
-
-  function story_cb(item) {
-    const condition_met = !item.condition || item.condition();
-    if (condition_met) {
-      core.push_story(`${item.text}`);
-    }
-  }
-
   function tear_down() {
+    story_items.helper.cancel();
     e.haircut_btn.removeEventListener('click', cb__haircut_btn__click);
-    story.timeouts.forEach(clearTimeout);
     renderman.remove_renderer(e.renderer_div);
     e = { };
   }
@@ -127,7 +117,7 @@ function mk_instance() {
   function offer_razor() {
     razor_offered = true;
 
-    core.push_story('‘Would you care to purchase my old razor?’ enquires an old gent on his way out. He doesn’t meet your eye.');
+    core.push_story('On his way out, an old gent hesitates, then offers to sell you his old razor. He used to be a barber once, apparently. He doesn’t meet your eye.');
     setTimeout(_ => {
       core.push_story('The razor is grimy and old, but would polish up all right.');
     }, 5000);
@@ -155,6 +145,8 @@ function mk_instance() {
     e.haircut_btn.disabled                = customers_waiting === 0;
     e.customer_count_n.textContent        = customers_waiting;
     e.customer_count_plural.style.display = customers_waiting === 1 ? 'none' : 'inline';
+
+    e.razor_purchase_btn.disabled = model.money.lt(price_of_razor);
   }
 
   return {
