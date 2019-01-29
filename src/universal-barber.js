@@ -22,25 +22,23 @@ controllerman.add_controller(sanity__happy_hair_salon());
 // Game loop
 // ------------------------------
 
-function loop(t) {
-  let delta_t = 0.05;
+function loop() {
+  const t = performance.now();
+  let delta_t = 0;
   if (loop.last_t !== undefined) {
     delta_t = (t - loop.last_t) * 0.001;
-    loop.last_t = t;
   }
   loop.last_t = t;
   delta_t = Math.max(delta_t, 0.05);
+  delta_t = Math.min(delta_t, 0.2);
 
   // Update controllers
   controllerman.get_controllers().forEach((c) => c.update(delta_t));
   c_core.update();
-
-  // Loop
-  loop.enqueue();
 }
-loop.enqueue = function() { loop.timer = requestAnimationFrame(loop) };
-loop.stop = function() { cancelAnimationFrame(loop.timer); };
-loop.enqueue();
+loop.start = function() { loop.timer = setInterval(loop, 50) };
+loop.stop = function() { clearInterval(loop.timer); };
+loop.start();
 
 window.universal_barber = loop;  // For convenience
 
