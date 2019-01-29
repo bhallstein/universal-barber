@@ -73,7 +73,7 @@ function story__begin() {
   el.story.appendChild(div_entry);
 
   story_state.running = true;
-  typeout(item, div_entry, 10, story__complete_item);
+  typeout(item, div_entry, 20, story__complete_item);
 }
 
 function story__complete_item() {
@@ -90,13 +90,14 @@ function story__complete_item() {
 function update() {
   const s = {
     haircuts: model.haircuts.toFixed(),
+    shaves:   model.shaves.toFixed(),
     money:    model.money.toFixed(),
   };
 
   if (JSON.stringify(s) !== JSON.stringify(update.s_prev)) {
     el.state.innerHTML = `
-      ${s.haircuts} haircuts
-      <br>
+      ${s.haircuts} haircuts<br>
+      ${model.shaves.gt(0) ? `${s.shaves} shaves<br>` : ''}
       £${s.money}
     `;
     update.s_prev = s;

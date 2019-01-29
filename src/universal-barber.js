@@ -17,7 +17,6 @@ c_core.update();
 // ------------------------------
 
 controllerman.add_controller(sanity__happy_hair_salon());
-c_core.push_story('Welcome to Happy Hair Salon. It’s good to see you.');
 
 
 // Game loop
