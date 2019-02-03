@@ -15,7 +15,7 @@ function is_bigjs(str) {
 
 function save() {
   try {
-    localStorage.setItem('universal-barber', JSON.stringify(state));
+    localStorage.setItem('ub', JSON.stringify(state));
   }
   catch (error) {
     // Unable to store
@@ -25,7 +25,7 @@ function save() {
 
 function load() {
   try {
-    const data = JSON.parse(localStorage.getItem('universal-barber'), (k, v) => {
+    const data = JSON.parse(localStorage.getItem('ub'), (k, v) => {
       return is_bigjs(v) ? new Big(v) : v;
     });
     state = data;
@@ -36,12 +36,21 @@ function load() {
 }
 
 
+function init_controller_state(uid) {
+  const s = { };
+  state[`c-${uid}`] = s;
+  return s;
+}
+
+
 let state = {
   haircuts: Big(0),
   shaves: Big(0),
   money: Big(0),
 
   save,
+  load,
+  init_controller_state,
 };
 
 

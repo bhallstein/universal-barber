@@ -10,10 +10,10 @@ import * as core from './core';
 import create_element from '../helpers/create-element';
 import timed_story_helper from '../helpers/timed-story-helper';
 
-function mk_instance() {
+function mk_instance(uid) {
   const story_items = [
     {
-      text:      'Welcome to Happy Hair Salon.',
+      text:      'Welcome to Happy Hair Salon. It’s good to see you.',
       time:      0,
     },
     {
@@ -35,32 +35,24 @@ function mk_instance() {
     },
   ];
 
-  // Haircut queue
-  let haircut_queue = 0;
-  let haircut_queue__max = 4;
-  let haircut_queue__enabled = false;
-  let haircut_queue__initial_delay = 5;
-  let haircut_price = 1;
-  let haircut_queue__p_spawn = 0.1;    // Per second (probabilistic)
 
-  // Shave queue
-  let shave_queue = 0;
-  let shave_queue__max = 2;
-  let shave_queue__enabled = false;
-  let shave_price = 1;
-  let shave_queue__p_spawn = 0.08;      // Per second (probabilistic)
+  // State (attached to model)
+  let s;
 
-  // Razor offer/purchase
+
+  // Settings
+  const haircut_queue__max = 4;
+  const haircut_queue__initial_delay = 5;
+  const haircut_queue__p_spawn = 0.7;    // Per second (probabilistic)
+
+  const shave_queue__max = 2;
+  const shave_queue__p_spawn = 0.6;
+
   const haircut_threshold_for_razor_offer = 10;
   const p_offer_of_razor_purchase = 0.3;
   const price_of_razor = 15;
   const razor_polish_msg = 'You polish the razor.';
-  let razor_offered = false;
-  let razor_purchased = false;
-
-  // Polishing
   const polish_every = 2;
-  let razor_polished = false;
 
 
   const e = {
@@ -78,7 +70,7 @@ function mk_instance() {
           </div>
 
           <div class="razor-purchase" style="display: none;">
-            <input type="button" class="razor-purchase-btn" value="Purchase the old razor" title="£${price_of_razor}">
+            <input type="button" class="razor-purchase-btn" value="Purchase the old razor"> (£${price_of_razor})
           </div>
 
           <div class="shaving" style="display: none;">
@@ -117,13 +109,32 @@ function mk_instance() {
   function init() {
     e.create();
 
+    core.set_title('HHS');
+
     e.haircut_btn.addEventListener('click', cb__haircut_btn__click);
     e.razor_purchase_btn.addEventListener('click', cb__razor_purchase_btn__click);
     e.shave_btn.addEventListener('click', cb__shave_btn__click);
     e.polish_btn.addEventListener('click', cb__polish_btn__click);
 
     story_items.helper = timed_story_helper(story_items);
-    setTimeout(() => haircut_queue__enabled = true, haircut_queue__initial_delay*1000);
+    setTimeout(() => s.haircut_queue__enabled = true, haircut_queue__initial_delay*1000);
+
+    s = model.init_controller_state(uid);
+
+    // Haircut queue
+    s.haircut_queue = 0;
+    s.haircut_queue__enabled = false;
+    s.haircut_price = 1;
+
+    // Shave queue
+    s.shave_queue = 0;
+    s.shave_queue__enabled = false;
+    s.shave_price = 1;
+
+    // Razor
+    s.razor_offered = false;
+    s.razor_purchased = false;
+    s.razor_polished = false;
   }
   init();
 
@@ -137,7 +148,7 @@ function mk_instance() {
 
 
   function offer_razor() {
-    razor_offered = true;
+    s.razor_offered = true;
 
     core.push_story('Hesitating on his way out, an OLD GENT turns and offers you his old razor. He doesn’t meet your eye.');
     setTimeout(_ => {
@@ -150,10 +161,10 @@ function mk_instance() {
 
   function cb__haircut_btn__click(ev) {
     model.haircuts = model.haircuts.plus(1);
-    model.money = model.money.plus(haircut_price);
-    --haircut_queue;
+    model.money = model.money.plus(s.haircut_price);
+    --s.haircut_queue;
 
-    if (!razor_offered && model.haircuts.gte(haircut_threshold_for_razor_offer)) {
+    if (!s.razor_offered && model.haircuts.gte(haircut_threshold_for_razor_offer)) {
       if (Math.random() <= p_offer_of_razor_purchase) {
         offer_razor();
       }
@@ -164,69 +175,71 @@ function mk_instance() {
   function cb__razor_purchase_btn__click() {
     model.money = model.money.minus(price_of_razor);
 
-    razor_purchased = true;
-    shave_queue__enabled = true;
+    s.razor_purchased = true;
+    s.shave_queue__enabled = true;
 
     e.razor_purchase_wrapper.style.display = 'none';
 
-    razor_polished = true;
+    s.razor_polished = true;
     core.push_story(razor_polish_msg);
   }
 
 
   function cb__shave_btn__click() {
     model.shaves = model.shaves.plus(1);
-    model.money = model.money.plus(shave_price);
-    --shave_queue;
-    razor_polished = false;
+    model.money = model.money.plus(s.shave_price);
+    --s.shave_queue;
+    s.razor_polished = false;
   }
 
 
   function cb__polish_btn__click() {
-    razor_polished = true;
+    s.razor_polished = true;
     core.push_story(razor_polish_msg);
   }
 
 
   function razor_needs_polishing() {
-    return !model.shaves.eq(0) && model.shaves.mod(polish_every).eq(0) && !razor_polished;
+    return !model.shaves.eq(0) && !s.razor_polished && model.shaves.mod(polish_every).eq(0);
   }
 
 
   function update(delta_t) {
     // Spawn customers
-    if (haircut_queue__enabled) {
+    if (s.haircut_queue__enabled) {
       if (Math.random() <= haircut_queue__p_spawn * delta_t) {
-        ++haircut_queue;
+        ++s.haircut_queue;
       }
-      haircut_queue = Math.min(haircut_queue, haircut_queue__max);
+      s.haircut_queue = Math.min(s.haircut_queue, haircut_queue__max);
     }
 
-    if (shave_queue__enabled) {
+    if (s.shave_queue__enabled) {
       if (Math.random() <= shave_queue__p_spawn * delta_t) {
-        ++shave_queue;
+        ++s.shave_queue;
       }
-      shave_queue = Math.min(shave_queue, shave_queue__max);
+      s.shave_queue = Math.min(s.shave_queue, shave_queue__max);
     }
 
-    e.haircut_customer_count.textContent          = haircut_queue;
-    e.haircut_customer_count_plural.style.display = haircut_queue === 1 ? 'none' : 'inline';
-    e.haircut_btn.disabled                        = haircut_queue === 0;
+    e.haircut_customer_count.textContent          = s.haircut_queue;
+    e.haircut_customer_count_plural.style.display = s.haircut_queue === 1 ? 'none' : 'inline';
+    e.haircut_btn.disabled                        = s.haircut_queue === 0;
 
     e.razor_purchase_btn.disabled = model.money.lt(price_of_razor);
 
     const needs_polishing = razor_needs_polishing();
-    e.shave_wrapper.style.display               = razor_purchased ? 'block' : 'none';
-    e.shave_customer_count.textContent          = shave_queue;
-    e.shave_customer_count_plural.style.display = shave_queue === 1 ? 'none' : 'inline';
-    e.shave_btn.disabled                        = shave_queue === 0 || needs_polishing;
+    e.shave_wrapper.style.display               = s.razor_purchased ? 'block' : 'none';
+    e.shave_customer_count.textContent          = s.shave_queue;
+    e.shave_customer_count_plural.style.display = s.shave_queue === 1 ? 'none' : 'inline';
+    e.shave_btn.disabled                        = s.shave_queue === 0 || needs_polishing;
     e.polish_btn.disabled                       = !needs_polishing;
   }
 
-  return {
+  const exp = {
     tear_down,
     update,
   };
+
+  return exp;
 }
 
 export default mk_instance;
