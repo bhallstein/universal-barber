@@ -3,43 +3,28 @@
 //
 
 import Big from 'big.js';
+import M from './model';
 import controllers from './controllers';
-import model from './model';
 
 
-// Controllers
+// Load or set up state for new game
 // ------------------------------
 
-const live_controllers = [ ];
-
-function mk_controller(name) {
-  // Get uid
-  if (mk_controller.uid === undefined) {
-    mk_controller.uid = 0;
-  }
-  const uid = mk_controller.uid++;
-
-  const c = controllers[name](uid);
-  c.name = name;
-  c.uid = `c-${uid}`;
-
-  return c;
-}
-
-function save_controllers() {
-  try {
-    const controllers_data = live_controllers.map(c => [ c.name, c.uid ]);
-    localStorage.setItem('ub-controllers', JSON.stringify(controllers_data));
-  }
-  catch(error) {
-    console.log(error);
+function load() {
+  const model_loaded = M.load();
+  if (!model_loaded) {
+    return false;
   }
 }
 
-live_controllers.push(mk_controller('sanity__happy_hair_salon'));
+function new_game() {
+  M.mk_controller('sanity__happy_hair_salon');
+}
+
+load() || new_game();
 
 
-// Initialize game loop
+// Game loop
 // ------------------------------
 
 function loop() {
@@ -54,8 +39,7 @@ function loop() {
     t - loop.t_last_save > 10000
   );
   if (should_save) {
-    model.save();
-    save_controllers();
+    M.save();
     loop.t_last_save = t;
   }
 
@@ -64,7 +48,7 @@ function loop() {
   delta_t = Math.min(delta_t, 0.2);
 
   // Update controllers
-  live_controllers.forEach(c => c.update(delta_t));
+  M.state.controllers.forEach(c => c.instance.update(delta_t));
   controllers.core.update();
 }
 loop.start = function() { loop.timer = setInterval(loop, 50) };

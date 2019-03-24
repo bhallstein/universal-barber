@@ -5,12 +5,12 @@
 //
 
 import * as renderman from '../renderman';
-import model from '../model';
+import M from '../model';
 import * as core from './core';
 import create_element from '../helpers/create-element';
 import timed_story_helper from '../helpers/timed-story-helper';
 
-function mk_instance(uid) {
+function mk_instance(uid, s, is_fresh) {
   const story_items = [
     {
       text:      'Welcome to Happy Hair Salon. It’s good to see you.',
@@ -27,7 +27,7 @@ function mk_instance(uid) {
     {
       text:      'Are you a barber or what?',
       time:      30,
-      condition: () => model.haircuts.eq(0),
+      condition: () => M.state.haircuts.eq(0),
     },
     {
       text:      'A cold mist curls around the door frame.',
@@ -35,9 +35,6 @@ function mk_instance(uid) {
     },
   ];
 
-
-  // State (attached to model)
-  let s;
 
 
   // Settings
@@ -117,24 +114,28 @@ function mk_instance(uid) {
     e.polish_btn.addEventListener('click', cb__polish_btn__click);
 
     story_items.helper = timed_story_helper(story_items);
-    setTimeout(() => s.haircut_queue__enabled = true, haircut_queue__initial_delay*1000);
+      // Uncertain how to deal with save/load of story at present
 
-    s = model.init_controller_state(uid);
+    if (is_fresh) {
+      // Haircut queue
+      s.haircut_queue = 0;
+      s.haircut_queue__enabled = false;
+      s.haircut_price = 1;
 
-    // Haircut queue
-    s.haircut_queue = 0;
-    s.haircut_queue__enabled = false;
-    s.haircut_price = 1;
+      // Shave queue
+      s.shave_queue = 0;
+      s.shave_queue__enabled = false;
+      s.shave_price = 1;
 
-    // Shave queue
-    s.shave_queue = 0;
-    s.shave_queue__enabled = false;
-    s.shave_price = 1;
+      // Razor
+      s.razor_offered = false;
+      s.razor_purchased = false;
+      s.razor_polished = false;
+    }
 
-    // Razor
-    s.razor_offered = false;
-    s.razor_purchased = false;
-    s.razor_polished = false;
+    if (!s.haircut_queue__enabled) {
+      setTimeout(() => s.haircut_queue__enabled = true, haircut_queue__initial_delay*1000);
+    }
   }
   init();
 
@@ -160,11 +161,11 @@ function mk_instance(uid) {
 
 
   function cb__haircut_btn__click(ev) {
-    model.haircuts = model.haircuts.plus(1);
-    model.money = model.money.plus(s.haircut_price);
+    M.state.haircuts = M.state.haircuts.plus(1);
+    M.state.money = M.state.money.plus(s.haircut_price);
     --s.haircut_queue;
 
-    if (!s.razor_offered && model.haircuts.gte(haircut_threshold_for_razor_offer)) {
+    if (!s.razor_offered && M.state.haircuts.gte(haircut_threshold_for_razor_offer)) {
       if (Math.random() <= p_offer_of_razor_purchase) {
         offer_razor();
       }
@@ -173,7 +174,7 @@ function mk_instance(uid) {
 
 
   function cb__razor_purchase_btn__click() {
-    model.money = model.money.minus(price_of_razor);
+    M.state.money = M.state.money.minus(price_of_razor);
 
     s.razor_purchased = true;
     s.shave_queue__enabled = true;
@@ -186,8 +187,8 @@ function mk_instance(uid) {
 
 
   function cb__shave_btn__click() {
-    model.shaves = model.shaves.plus(1);
-    model.money = model.money.plus(s.shave_price);
+    M.state.shaves = M.state.shaves.plus(1);
+    M.state.money = M.state.money.plus(s.shave_price);
     --s.shave_queue;
     s.razor_polished = false;
   }
@@ -200,7 +201,7 @@ function mk_instance(uid) {
 
 
   function razor_needs_polishing() {
-    return !model.shaves.eq(0) && !s.razor_polished && model.shaves.mod(polish_every).eq(0);
+    return !M.state.shaves.eq(0) && !s.razor_polished && M.state.shaves.mod(polish_every).eq(0);
   }
 
 
@@ -224,7 +225,7 @@ function mk_instance(uid) {
     e.haircut_customer_count_plural.style.display = s.haircut_queue === 1 ? 'none' : 'inline';
     e.haircut_btn.disabled                        = s.haircut_queue === 0;
 
-    e.razor_purchase_btn.disabled = model.money.lt(price_of_razor);
+    e.razor_purchase_btn.disabled = M.state.money.lt(price_of_razor);
 
     const needs_polishing = razor_needs_polishing();
     e.shave_wrapper.style.display               = s.razor_purchased ? 'block' : 'none';

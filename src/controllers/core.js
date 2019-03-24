@@ -8,7 +8,7 @@
 //
 
 import typeout from '../helpers/typeout';
-import model from '../model';
+import M from '../model';
 
 const el = {
   title: document.querySelector('.top-section__title'),
@@ -84,20 +84,19 @@ function story__complete_item() {
 
 // Update
 // ------------------------------
-// - refresh core state dislay
-//
+// - refresh core state display
 
 function update() {
   const s = {
-    haircuts: model.haircuts.toFixed(),
-    shaves:   model.shaves.toFixed(),
-    money:    model.money.toFixed(),
+    haircuts: M.state.haircuts.toFixed(),
+    shaves:   M.state.shaves.toFixed(),
+    money:    M.state.money.toFixed(),
   };
 
   if (JSON.stringify(s) !== JSON.stringify(update.s_prev)) {
     el.state.innerHTML = `
       ${s.haircuts} haircuts<br>
-      ${model.shaves.gt(0) ? `${s.shaves} shaves<br>` : ''}
+      ${M.state.shaves.gt(0) ? `${s.shaves} shaves<br>` : ''}
       £${s.money}
     `;
     update.s_prev = s;
